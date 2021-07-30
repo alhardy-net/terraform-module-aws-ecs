@@ -86,12 +86,18 @@ variable "container_definition" {
 variable "autoscaling" {
   description = "Autoscaling configuration"
   type = object({
-    min_capacity            = number
-    max_capacity            = number
-    cooldown_scale_up       = number
-    cooldown_scale_down     = number
-    metric_aggregation_type = string
-    adjustment_type         = string
+    min_capacity              = number
+    max_capacity              = number
+    cooldown_scale_up         = number
+    cooldown_scale_down       = number
+    metric_aggregation_type   = string
+    adjustment_type           = string
+    max_cpu_evaluation_period = string // The number of periods over which data is compared to the specified threshold for max cpu metric alarm
+    max_cpu_period            = string // The period in seconds over which the specified statistic is applied for max cpu metric alarm
+    max_cpu_threshold         = string // Threshold for max CPU usage
+    min_cpu_evaluation_period = string // The number of periods over which data is compared to the specified threshold for min cpu metric alarm
+    min_cpu_period            = string // The period in seconds over which the specified statistic is applied for min cpu metric alarm
+    min_cpu_threshold         = string // Threshold for min CPU usage
   })
 }
 

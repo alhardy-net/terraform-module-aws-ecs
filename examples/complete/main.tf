@@ -74,11 +74,17 @@ module "ecs_service" {
   app_mesh_virtual_gateway_name         = local.app_mesh_virtual_gateway_name
   app_mesh_virtual_gateway_match_prefix = "/"
   autoscaling = {
-    min_capacity            = 1
-    max_capacity            = 4
-    cooldown_scale_up       = 60
-    cooldown_scale_down     = 180
-    metric_aggregation_type = "Average"
-    adjustment_type         = "ChangeInCapacity"
+    min_capacity              = 1
+    max_capacity              = 4
+    cooldown_scale_up         = 60
+    cooldown_scale_down       = 180
+    metric_aggregation_type   = "Average"
+    adjustment_type           = "ChangeInCapacity"
+    max_cpu_evaluation_period = "3"
+    max_cpu_period            = "60"
+    max_cpu_threshold         = "85"
+    min_cpu_evaluation_period = "3"
+    min_cpu_period            = "60"
+    min_cpu_threshold         = "10"
   }
 }

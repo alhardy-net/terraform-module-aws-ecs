@@ -1,3 +1,35 @@
+resource "aws_cloudwatch_metric_alarm" "cpu_high" {
+  alarm_name          = "${aws_ecs_service.service.name}-cpu-high"
+  comparison_operator = "GreaterThanOrEqualToThreshold"
+  evaluation_periods  = var.autoscaling.max_cpu_evaluation_period
+  metric_name         = "CPUUtilization"
+  namespace           = "AWS/ECS"
+  period              = var.autoscaling.max_cpu_period
+  statistic           = "Maximum"
+  threshold           = var.autoscaling.max_cpu_threshold
+  dimensions = {
+    ClusterName = var.cluster_name
+    ServiceName = aws_ecs_service.service.name
+  }
+  alarm_actions = [aws_appautoscaling_policy.up.arn]
+}
+
+resource "aws_cloudwatch_metric_alarm" "cpu_low" {
+  alarm_name          = "${aws_ecs_service.service.name}-cpu-low"
+  comparison_operator = "LessThanOrEqualToThreshold"
+  evaluation_periods  = var.autoscaling.min_cpu_evaluation_period
+  metric_name         = "CPUUtilization"
+  namespace           = "AWS/ECS"
+  period              = var.autoscaling.min_cpu_period
+  statistic           = "Average"
+  threshold           = var.autoscaling.min_cpu_threshold
+  dimensions = {
+    ClusterName = var.cluster_name
+    ServiceName = aws_ecs_service.service.name
+  }
+  alarm_actions = [aws_appautoscaling_policy.down.arn]
+}
+
 resource "aws_appautoscaling_target" "target" {
   service_namespace  = "ecs"
   resource_id        = "service/${var.cluster_name}/${aws_ecs_service.service.name}"
