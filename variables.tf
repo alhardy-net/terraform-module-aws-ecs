@@ -83,6 +83,14 @@ variable "container_definition" {
   })
 }
 
+variable "min_task_count" {
+  type = number
+}
+
+variable "max_task_count" {
+  type = number
+}
+
 variable "envoy_image" {
   description = "The image to use for the envoy proxy"
   type        = string

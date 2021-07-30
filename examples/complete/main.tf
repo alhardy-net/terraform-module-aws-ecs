@@ -73,4 +73,6 @@ module "ecs_service" {
   vpc_id                                = local.vpc_id
   app_mesh_virtual_gateway_name         = local.app_mesh_virtual_gateway_name
   app_mesh_virtual_gateway_match_prefix = "/"
+  max_task_count = 1
+  min_task_count = 5
 }
