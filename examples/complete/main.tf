@@ -73,6 +73,12 @@ module "ecs_service" {
   vpc_id                                = local.vpc_id
   app_mesh_virtual_gateway_name         = local.app_mesh_virtual_gateway_name
   app_mesh_virtual_gateway_match_prefix = "/"
-  max_task_count = 1
-  min_task_count = 5
+  autoscaling = {
+    min_capacity            = 1
+    max_capacity            = 4
+    cooldown_scale_up       = 60
+    cooldown_scale_down     = 180
+    metric_aggregation_type = "Average"
+    adjustment_type         = "ChangeInCapacity"
+  }
 }

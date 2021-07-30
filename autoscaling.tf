@@ -2,8 +2,8 @@ resource "aws_appautoscaling_target" "target" {
   service_namespace  = "ecs"
   resource_id        = "service/${var.cluster_name}/${aws_ecs_service.service.name}"
   scalable_dimension = "ecs:service:DesiredCount"
-  min_capacity       = var.min_task_count
-  max_capacity       = var.max_task_count
+  min_capacity       = var.autoscaling.min_capacity
+  max_capacity       = var.autoscaling.max_capacity
 }
 
 resource "aws_appautoscaling_policy" "up" {
@@ -13,9 +13,9 @@ resource "aws_appautoscaling_policy" "up" {
   scalable_dimension = "ecs:service:DesiredCount"
 
   step_scaling_policy_configuration {
-    adjustment_type         = "ChangeInCapacity"
-    cooldown                = 60
-    metric_aggregation_type = "Average"
+    adjustment_type         = var.autoscaling.adjustment_type
+    cooldown                = var.autoscaling.cooldown_scale_up
+    metric_aggregation_type = var.autoscaling.metric_aggregation_type
 
     step_adjustment {
       metric_interval_lower_bound = 0
@@ -32,9 +32,9 @@ resource "aws_appautoscaling_policy" "down" {
   scalable_dimension = "ecs:service:DesiredCount"
 
   step_scaling_policy_configuration {
-    adjustment_type         = "ChangeInCapacity"
-    cooldown                = 300
-    metric_aggregation_type = "Average"
+    adjustment_type         = var.autoscaling.adjustment_type
+    cooldown                = var.autoscaling.cooldown_scale_down
+    metric_aggregation_type = var.autoscaling.metric_aggregation_type
 
     step_adjustment {
       metric_interval_upper_bound = 0

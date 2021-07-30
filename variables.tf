@@ -83,12 +83,16 @@ variable "container_definition" {
   })
 }
 
-variable "min_task_count" {
-  type = number
-}
-
-variable "max_task_count" {
-  type = number
+variable "autoscaling" {
+  description = "Autoscaling configuration"
+  type = object({
+    min_capacity            = number
+    max_capacity            = number
+    cooldown_scale_up       = number
+    cooldown_scale_down     = number
+    metric_aggregation_type = string
+    adjustment_type         = string
+  })
 }
 
 variable "envoy_image" {
