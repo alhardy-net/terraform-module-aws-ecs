@@ -19,7 +19,7 @@ resource "aws_appmesh_virtual_node" "this" {
       }
       health_check {
         protocol            = "http"
-        path                = "/"
+        path                = "/ping"
         port                = 80
         healthy_threshold   = 2
         unhealthy_threshold = 2
