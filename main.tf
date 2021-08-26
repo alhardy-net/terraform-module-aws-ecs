@@ -12,10 +12,10 @@ data "aws_secretsmanager_secret_version" "platform" {
 }
 
 locals {
-  platform_creds = jsondecode(data.aws_secretsmanager_secret_version.platform.secret_string)
-  loki_url = "https://${local.platform_creds.grafana_userid}:${local.platform_creds.grafana_apikey}@logs-prod-us-central1.grafana.net/loki/api/v1/push"
+  platform_creds   = jsondecode(data.aws_secretsmanager_secret_version.platform.secret_string)
+  loki_url         = "https://${local.platform_creds.grafana_userid}:${local.platform_creds.grafana_apikey}@logs-prod-us-central1.grafana.net/loki/api/v1/push"
   loki_remove_keys = "container_id,ecs_task_arn"
-  loki_label_keys = "container_name,ecs_task_definition,source,ecs_cluster"
+  loki_label_keys  = "container_name,ecs_task_definition,source,ecs_cluster"
 }
 
 resource "aws_ecs_task_definition" "this" {
@@ -56,11 +56,11 @@ resource "aws_ecs_task_definition" "this" {
         logDriver = "awsfirelens"
         secretOptions : null
         options = {
-          Name = "loki",
-          Url = local.loki_url
-          Labels = ""
+          Name       = "loki",
+          Url        = local.loki_url
+          Labels     = ""
           RemoveKeys = local.loki_remove_keys
-          LabelKeys = local.loki_label_keys
+          LabelKeys  = local.loki_label_keys
           LineFormat = "key_value"
         }
       }
@@ -97,11 +97,11 @@ resource "aws_ecs_task_definition" "this" {
         logDriver = "awsfirelens"
         secretOptions : null
         options = {
-          Name = "loki",
-          Url = local.loki_url
-          Labels = ""
+          Name       = "loki",
+          Url        = local.loki_url
+          Labels     = ""
           RemoveKeys = local.loki_remove_keys
-          LabelKeys = local.loki_label_keys
+          LabelKeys  = local.loki_label_keys
           LineFormat = "key_value"
         }
       }
@@ -120,35 +120,35 @@ resource "aws_ecs_task_definition" "this" {
         logDriver = "awsfirelens"
         secretOptions : null
         options = {
-          Name = "loki",
-          Url = local.loki_url
-          Labels = ""
+          Name       = "loki",
+          Url        = local.loki_url
+          Labels     = ""
           RemoveKeys = local.loki_remove_keys
-          LabelKeys = local.loki_label_keys
+          LabelKeys  = local.loki_label_keys
           LineFormat = "key_value"
         }
       }
     },
     {
       essential = true,
-      image = "grafana/fluent-bit-plugin-loki:main-668622c-amd64",
-      name = "log_router",
-      firelensConfiguration: {
+      image     = var.fluent_bit_loki_image,
+      name      = "log_router",
+      firelensConfiguration : {
         type = "fluentbit",
-        options: {
+        options : {
           enable-ecs-log-metadata = "true"
         }
       },
-      logConfiguration: {
-        logDriver: "awslogs",
-        options: {
-          awslogs-group = "firelens-container",
-          awslogs-region = "us-east-2",
-          awslogs-create-group = "true",
+      logConfiguration : {
+        logDriver : "awslogs",
+        options : {
+          awslogs-group         = "firelens-container",
+          awslogs-region        = "us-east-2",
+          awslogs-create-group  = "true",
           awslogs-stream-prefix = "firelens"
         }
       },
-      memoryReservation: 50
+      memoryReservation : 50
     }
   ])
 }

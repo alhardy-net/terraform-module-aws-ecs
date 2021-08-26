@@ -112,3 +112,9 @@ variable "xray_image" {
   type        = string
   default     = "amazon/aws-xray-daemon:1"
 }
+
+variable "fluent_bit_loki_image" {
+  description = "The image used for the loki sidecar"
+  type        = string
+  default     = "grafana/fluent-bit-plugin-loki:main-668622c-amd64"
+}
