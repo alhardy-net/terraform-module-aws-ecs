@@ -7,6 +7,17 @@ data "aws_ecs_container_definition" "existing" {
   task_definition = var.task_definition.family
 }
 
+data "aws_secretsmanager_secret_version" "platform" {
+  secret_id = "platform/shared"
+}
+
+locals {
+  platform_creds = jsondecode(data.aws_secretsmanager_secret_version.platform.secret_string)
+  loki_url = "https://${local.platform_creds.grafana_userid}:${local.platform_creds.grafana_apikey}@logs-prod-us-central1.grafana.net/loki/api/v1/push"
+  loki_remove_keys = "container_id,ecs_task_arn"
+  loki_label_keys = "container_name,ecs_task_definition,source,ecs_cluster"
+}
+
 resource "aws_ecs_task_definition" "this" {
   family = var.task_definition.family
   requires_compatibilities = [
@@ -42,12 +53,15 @@ resource "aws_ecs_task_definition" "this" {
       ]
       environment = var.container_definition.environment
       logConfiguration = {
-        logDriver = "awslogs"
+        logDriver = "awsfirelens"
         secretOptions : null
         options = {
-          awslogs-group         = "/ecs/${var.service_name}"
-          awslogs-region        = var.aws_region
-          awslogs-stream-prefix = "ecs"
+          Name = "loki",
+          Url = local.loki_url
+          Labels = ""
+          RemoveKeys = local.loki_remove_keys
+          LabelKeys = local.loki_label_keys
+          LineFormat = "key_value"
         }
       }
     },
@@ -80,12 +94,15 @@ resource "aws_ecs_task_definition" "this" {
       }
       user = "1337"
       logConfiguration = {
-        logDriver = "awslogs"
+        logDriver = "awsfirelens"
         secretOptions : null
         options = {
-          awslogs-group         = "/ecs/${var.service_name}"
-          awslogs-region        = var.aws_region
-          awslogs-stream-prefix = "ecs"
+          Name = "loki",
+          Url = local.loki_url
+          Labels = ""
+          RemoveKeys = local.loki_remove_keys
+          LabelKeys = local.loki_label_keys
+          LineFormat = "key_value"
         }
       }
     },
@@ -100,14 +117,38 @@ resource "aws_ecs_task_definition" "this" {
         }
       ]
       logConfiguration = {
-        logDriver = "awslogs"
+        logDriver = "awsfirelens"
         secretOptions : null
         options = {
-          awslogs-group         = "/ecs/${var.service_name}"
-          awslogs-region        = var.aws_region
-          awslogs-stream-prefix = "ecs"
+          Name = "loki",
+          Url = local.loki_url
+          Labels = ""
+          RemoveKeys = local.loki_remove_keys
+          LabelKeys = local.loki_label_keys
+          LineFormat = "key_value"
         }
       }
+    },
+    {
+      essential = true,
+      image = "grafana/fluent-bit-plugin-loki:main-668622c-amd64",
+      name = "log_router",
+      firelensConfiguration: {
+        type = "fluentbit",
+        options: {
+          enable-ecs-log-metadata = "true"
+        }
+      },
+      logConfiguration: {
+        logDriver: "awslogs",
+        options: {
+          awslogs-group = "firelens-container",
+          awslogs-region = "us-east-2",
+          awslogs-create-group = "true",
+          awslogs-stream-prefix = "firelens"
+        }
+      },
+      memoryReservation: 50
     }
   ])
 }
