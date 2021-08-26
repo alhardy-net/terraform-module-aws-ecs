@@ -143,7 +143,7 @@ resource "aws_ecs_task_definition" "this" {
         logDriver : "awslogs",
         options : {
           awslogs-group         = "firelens-container",
-          awslogs-region        = "us-east-2",
+          awslogs-region        = var.aws_region,
           awslogs-create-group  = "true",
           awslogs-stream-prefix = "firelens"
         }
