@@ -16,6 +16,7 @@ locals {
   loki_url         = "https://${local.platform_creds.grafana_userid}:${local.platform_creds.grafana_apikey}@logs-prod-us-central1.grafana.net/loki/api/v1/push"
   loki_remove_keys = "container_id,ecs_task_arn"
   loki_label_keys  = "container_name,ecs_task_definition,source,ecs_cluster"
+  loki_labels      = "{ecs_service=\"${var.service_name}\", env=\"${var.env}\"}"
 }
 
 resource "aws_ecs_task_definition" "this" {
@@ -58,7 +59,7 @@ resource "aws_ecs_task_definition" "this" {
         options = {
           Name       = "loki",
           Url        = local.loki_url
-          Labels     = ""
+          Labels     = local.loki_labels
           RemoveKeys = local.loki_remove_keys
           LabelKeys  = local.loki_label_keys
           LineFormat = "key_value"
@@ -122,7 +123,7 @@ resource "aws_ecs_task_definition" "this" {
         options = {
           Name       = "loki",
           Url        = local.loki_url
-          Labels     = ""
+          Labels     = local.loki_labels
           RemoveKeys = local.loki_remove_keys
           LabelKeys  = local.loki_label_keys
           LineFormat = "key_value"
