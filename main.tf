@@ -100,7 +100,7 @@ resource "aws_ecs_task_definition" "this" {
         options = {
           Name       = "loki",
           Url        = local.loki_url
-          Labels     = ""
+          Labels     = local.loki_labels
           RemoveKeys = local.loki_remove_keys
           LabelKeys  = local.loki_label_keys
           LineFormat = "key_value"
