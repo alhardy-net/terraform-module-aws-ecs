@@ -121,5 +121,5 @@ variable "xray_image" {
 variable "fluent_bit_loki_image" {
   description = "The image used for the loki sidecar"
   type        = string
-  default     = "grafana/fluent-bit-plugin-loki:main"
+  default     = "grafana/fluent-bit-plugin-loki:latest"
 }
