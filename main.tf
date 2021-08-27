@@ -57,7 +57,7 @@ resource "aws_ecs_task_definition" "this" {
         logDriver = "awsfirelens"
         secretOptions : null
         options = {
-          Name       = "loki",
+          Name       = "grafana-loki",
           Url        = local.loki_url
           Labels     = local.loki_labels
           RemoveKeys = local.loki_remove_keys
@@ -98,7 +98,7 @@ resource "aws_ecs_task_definition" "this" {
         logDriver = "awsfirelens"
         secretOptions : null
         options = {
-          Name       = "loki",
+          Name       = "grafana-loki",
           Url        = local.loki_url
           Labels     = local.loki_labels
           RemoveKeys = local.loki_remove_keys
@@ -121,7 +121,7 @@ resource "aws_ecs_task_definition" "this" {
         logDriver = "awsfirelens"
         secretOptions : null
         options = {
-          Name       = "loki",
+          Name       = "grafana-loki",
           Url        = local.loki_url
           Labels     = local.loki_labels
           RemoveKeys = local.loki_remove_keys
