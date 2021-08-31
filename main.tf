@@ -136,8 +136,8 @@ resource "aws_ecs_task_definition" "this" {
       name      = "aws-otel-collector",
       secrets = [
         {
-          valueFrom  = "otel-collector-config-${var.service_name}"
-          name = "AOT_CONFIG_CONTENT"
+          valueFrom = "otel-collector-config-${var.service_name}"
+          name      = "AOT_CONFIG_CONTENT"
         }
       ],
       logConfiguration = {

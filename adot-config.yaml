@@ -11,6 +11,7 @@ receivers:
               labels:
                 ecs_cluster: ${ecs_cluster}
                 ecs_revision: ${ecs_revision}
+                env: ${env}
   awsecscontainermetrics:
     collection_interval: 20s
 
