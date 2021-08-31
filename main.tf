@@ -134,16 +134,19 @@ resource "aws_ecs_task_definition" "this" {
       essential = true,
       image     = var.aws_otel_collector_image,
       name      = "aws-otel-collector",
-      logConfiguration = {
-        logDriver = "awsfirelens"
-        secretOptions : null
-        options = {
-          Name       = "grafana-loki",
-          Url        = local.loki_url
-          Labels     = local.loki_labels
-          RemoveKeys = local.loki_remove_keys
-          LabelKeys  = local.loki_label_keys
-          LineFormat = "key_value"
+      secrets = [
+        {
+          valueFrom  = "otel-collector-config"
+          name = "AOT_CONFIG_CONTENT"
+        }
+      ],
+      logConfiguration : {
+        logDriver : "awslogs",
+        options : {
+          awslogs-group         = "aws-otel-container",
+          awslogs-region        = var.aws_region,
+          awslogs-create-group  = "true",
+          awslogs-stream-prefix = "firelens"
         }
       }
     },
