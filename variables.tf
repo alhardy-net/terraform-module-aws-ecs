@@ -123,3 +123,9 @@ variable "fluent_bit_loki_image" {
   type        = string
   default     = "grafana/fluent-bit-plugin-loki:2.2.1-amd64"
 }
+
+variable "aws_otel_collector_image" {
+  description = "The image used for the aws distro open telemetry sidecar"
+  type        = string
+  default     = "public.ecr.aws/aws-observability/aws-otel-collector:latest"
+}

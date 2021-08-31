@@ -132,6 +132,23 @@ resource "aws_ecs_task_definition" "this" {
     },
     {
       essential = true,
+      image     = var.aws_otel_collector_image,
+      name      = "aws-otel-collector",
+      logConfiguration = {
+        logDriver = "awsfirelens"
+        secretOptions : null
+        options = {
+          Name       = "grafana-loki",
+          Url        = local.loki_url
+          Labels     = local.loki_labels
+          RemoveKeys = local.loki_remove_keys
+          LabelKeys  = local.loki_label_keys
+          LineFormat = "key_value"
+        }
+      }
+    },
+    {
+      essential = true,
       image     = var.fluent_bit_loki_image,
       name      = "log_router",
       firelensConfiguration : {
