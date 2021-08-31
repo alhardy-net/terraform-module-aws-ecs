@@ -29,13 +29,6 @@ processors:
           - ecs.task.network.rate.tx
           - ecs.task.storage.read_bytes
           - ecs.task.storage.write_bytes
-  resource:
-    attributes:
-      - key: instance
-        action: delete
-      - key: ecs_task_id
-        from_attribute: aws.ecs.task.id
-        action: insert
 exporters:
   awsprometheusremotewrite:
     endpoint: https://aps-workspaces.us-east-1.amazonaws.com/workspaces/ws-62b76f06-5262-4dde-9fda-778f3e18cfb6/api/v1/remote_write
