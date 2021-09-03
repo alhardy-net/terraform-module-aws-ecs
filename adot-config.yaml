@@ -1,4 +1,8 @@
 receivers:
+  otlp:
+    protocols:
+      grpc:
+      http:
   prometheus:
     config:
       global:
@@ -14,13 +18,11 @@ receivers:
                 env: ${env}
   awsecscontainermetrics:
     collection_interval: 20s
-  otlp:
-    protocols:
-      grpc:
-      http:
 
 processors:
-  batch:
+  batch/traces:
+    timeout: 30s
+    send_batch_size: 50
   filter:
     metrics:
       include:
@@ -43,8 +45,9 @@ exporters:
   logging:
     loglevel: info
   otlp:
-    endpoint: https://tempo-us-central1.grafana.net/tempo
-    headers: Basic ${grafana_tempo_apikey}
+    endpoint: tempo-us-central1.grafana.net:443
+    headers:
+      authorization: Basic ${grafana_tempo_apikey}
     
 extensions:
   health_check:
@@ -56,6 +59,10 @@ extensions:
 service:
   extensions: [pprof, zpages, health_check]
   pipelines:
+    otlp:
+      receivers: [otlp]
+      processors: [batch/traces]
+      exporters: [otlp]
     metrics:
       receivers: [prometheus]
       exporters: [logging, awsprometheusremotewrite]
@@ -63,7 +70,3 @@ service:
       receivers: [awsecscontainermetrics]
       processors: [filter]
       exporters: [logging, awsprometheusremotewrite]
-    traces:
-      receivers: [otlp]
-      processes: [batch]
-      exporters: [otlp]
