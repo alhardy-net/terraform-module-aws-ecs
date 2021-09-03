@@ -59,7 +59,7 @@ extensions:
 service:
   extensions: [pprof, zpages, health_check]
   pipelines:
-    otlp:
+    traces:
       receivers: [otlp]
       processors: [batch/traces]
       exporters: [otlphttp]
