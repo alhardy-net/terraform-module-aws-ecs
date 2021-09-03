@@ -43,8 +43,8 @@ exporters:
       region: us-east-1
       service: "aps"
   logging:
-    loglevel: info
-  otlp:
+    loglevel: error
+  otlphttp:
     endpoint: tempo-us-central1.grafana.net:443
     headers:
       authorization: Basic ${grafana_tempo_apikey}
@@ -62,7 +62,7 @@ service:
     otlp:
       receivers: [otlp]
       processors: [batch/traces]
-      exporters: [otlp]
+      exporters: [otlphttp]
     metrics:
       receivers: [prometheus]
       exporters: [logging, awsprometheusremotewrite]
