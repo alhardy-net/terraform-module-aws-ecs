@@ -17,6 +17,7 @@ locals {
   loki_remove_keys = "container_id,ecs_task_arn"
   loki_label_keys  = "container_name,ecs_task_definition,source,ecs_cluster"
   loki_labels      = "{ecs_service=\"${var.service_name}\", env=\"${var.env}\"}"
+  tempo_apikey     = local.platform_creds.grafana_tempo_apikey
 }
 
 resource "aws_ecs_task_definition" "this" {

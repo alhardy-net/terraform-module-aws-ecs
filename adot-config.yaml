@@ -14,8 +14,13 @@ receivers:
                 env: ${env}
   awsecscontainermetrics:
     collection_interval: 20s
+  otlp:
+    protocols:
+      grpc:
+      http:
 
 processors:
+  batch:
   filter:
     metrics:
       include:
@@ -37,6 +42,10 @@ exporters:
       service: "aps"
   logging:
     loglevel: info
+  otlp:
+    endpoint: https://tempo-us-central1.grafana.net/tempo
+    headers: Basic ${grafana_tempo_apikey}
+    
 extensions:
   health_check:
   pprof:
@@ -54,3 +63,7 @@ service:
       receivers: [awsecscontainermetrics]
       processors: [filter]
       exporters: [logging, awsprometheusremotewrite]
+    traces:
+      receivers: [otlp]
+      processes: [batch]
+      exporters: [otlp]
