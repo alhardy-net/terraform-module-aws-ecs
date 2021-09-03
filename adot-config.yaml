@@ -45,7 +45,7 @@ exporters:
   logging:
     loglevel: error
   otlphttp:
-    endpoint: tempo-us-central1.grafana.net:443
+    traces_endpoint: https://tempo-us-central1.grafana.net
     headers:
       authorization: Basic ${grafana_tempo_apikey}
     
